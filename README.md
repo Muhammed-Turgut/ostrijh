@@ -13,7 +13,7 @@ Kaynak kod `src/main.cpp` içindedir. Şu an PlatformIO şablonundan gelen başl
 
 ### MPU6050 bağlantısı
 
-SD kart kullanılmıyor. Kamera GPIO 0, 5, 18, 19, 21, 22, 23, 25, 26, 27, 32, 34, 35, 36 ve 39’u kullanır. GPIO 16 PSRAM’e aittir. GPIO 1 ve GPIO 3 seri porttur; programlama ve log için boş kalır.
+SD kart kullanılmıyor. Kamera GPIO 0, 4, 5, 18, 19, 21, 22, 23, 25, 26, 27, 32, 34, 35, 36 ve 39’u tutar. I2C bu pinlere bağlanmaz.
 
 | MPU6050 | ESP32-CAM |
 | --- | --- |
@@ -22,26 +22,9 @@ SD kart kullanılmıyor. Kamera GPIO 0, 5, 18, 19, 21, 22, 23, 25, 26, 27, 32, 3
 | SDA | GPIO 13 |
 | SCL | GPIO 14 |
 | AD0 | GND (adres `0x68`) |
-| INT | Bağlı değil (veri I2C üzerinden okunur) |
+| INT | GPIO 2 (isteğe bağlı) |
 
-### Motor sürücüleri (MOSFET)
-
-Dört motor, MOSFET’li sürücü devrelerinin gate girişlerinden PWM ile sürülür.
-
-| Motor | ESP32-CAM |
-| --- | --- |
-| Motor 1 | GPIO 2 |
-| Motor 2 | GPIO 4 |
-| Motor 3 | GPIO 12 |
-| Motor 4 | GPIO 15 |
-
-Bu pinlerin hepsinde açılışta durum önemlidir:
-
-- Her gate ile GND arasına 10 kΩ pull-down direnç takılır. GPIO 2 ve GPIO 12 açılışta LOW olmalıdır; aksi halde kart yüklenemez (GPIO 2) ya da flash 1.8 V seçilip açılmaz (GPIO 12). Pull-down, açılışta motorların dönmesini de engeller.
-- GPIO 4 kart üzerindeki flaş LED’ine bağlıdır. Motor 2 çalışırken LED de yanar.
-- GPIO 15 LOW tutulduğu için açılış logu seri porta basılmaz.
-- MOSFET 3.3 V gate ile tam açılan logic-level bir tip olmalıdır (ör. AO3400, IRLML6344). Her motorun uçlarına ters yönde flyback diyot takılır. Motor beslemesinin GND’si ESP32-CAM GND’sine bağlanır.
-- Kamera XCLK için LEDC timer 0 / kanal 0’ı kullanır. Motor PWM’i başka timer ve kanallarda kurulur.
+GPIO 12’ye bağlama. Üzerindeki pull-up, açılışta flash gerilimini 1.8 V seçer ve kart açılmaz. GPIO 1 ve GPIO 3 seri porttur; programlama için boş kalır. GPIO 16 ve GPIO 17 PSRAM’e aittir.
 
 ## Gereksinimler
 
